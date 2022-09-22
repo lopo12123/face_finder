@@ -25,7 +25,8 @@
             var facefinder_classify_region = function (r, c, s, pixels, ldim) {
                 return -1.0;
             };
-            var cascadeurl = 'https://raw.githubusercontent.com/nenadmarkus/pico/c2e81f9d23cc11d1a612fd21e4f9de0921a5d0d9/rnt/cascades/facefinder';
+            // var cascadeurl = 'https://raw.githubusercontent.com/nenadmarkus/pico/c2e81f9d23cc11d1a612fd21e4f9de0921a5d0d9/rnt/cascades/facefinder';
+            var cascadeurl = './facefinder';
             fetch(cascadeurl).then(function (response) {
                 response.arrayBuffer().then(function (buffer) {
                     var bytes = new Int8Array(buffer);
@@ -39,7 +40,8 @@
             var do_puploc = function (r, c, s, nperturbs, pixels, nrows, ncols, ldim) {
                 return [-1.0, -1.0];
             };
-            var puplocurl = 'https://drone.nenadmarkus.com/data/blog-stuff/puploc.bin'
+            // var puplocurl = 'https://drone.nenadmarkus.com/data/blog-stuff/puploc.bin'
+            var puplocurl = './puploc.bin'
             fetch(puplocurl).then(function (response) {
                 response.arrayBuffer().then(function (buffer) {
                     var bytes = new Int8Array(buffer);
@@ -142,5 +144,7 @@
     </script>
     <body>
         <canvas width=640 height=480></canvas>
+
+        <button onclick="button_callback()">start</button>
     </body>
 </html>
