@@ -46,7 +46,10 @@ pico.unpack_cascade = function (bytes) {
             p = p + 4;
         }
         // read the threshold
-        dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+        dview.setUint8(0, bytes[p + 0])
+        dview.setUint8(1, bytes[p + 1])
+        dview.setUint8(2, bytes[p + 2])
+        dview.setUint8(3, bytes[p + 3]);
         thresh_ls.push(dview.getFloat32(0, true));
         p = p + 4;
     }
