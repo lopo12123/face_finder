@@ -9,16 +9,28 @@ lploc.unpack_localizer = function (bytes) {
         read the number of stages, scale multiplier (applied after each stage),
         number of trees per stage and depth of each tree
     */
-    dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+    dview.setUint8(0, bytes[p + 0])
+    dview.setUint8(1, bytes[p + 1])
+    dview.setUint8(2, bytes[p + 2])
+    dview.setUint8(3, bytes[p + 3]);
     const nstages = dview.getInt32(0, true);
     p = p + 4;
-    dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+    dview.setUint8(0, bytes[p + 0])
+    dview.setUint8(1, bytes[p + 1])
+    dview.setUint8(2, bytes[p + 2])
+    dview.setUint8(3, bytes[p + 3]);
     const scalemul = dview.getFloat32(0, true);
     p = p + 4;
-    dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+    dview.setUint8(0, bytes[p + 0])
+    dview.setUint8(1, bytes[p + 1])
+    dview.setUint8(2, bytes[p + 2])
+    dview.setUint8(3, bytes[p + 3]);
     const ntreesperstage = dview.getInt32(0, true);
     p = p + 4;
-    dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+    dview.setUint8(0, bytes[p + 0])
+    dview.setUint8(1, bytes[p + 1])
+    dview.setUint8(2, bytes[p + 2])
+    dview.setUint8(3, bytes[p + 3]);
     const tdepth = dview.getInt32(0, true);
     p = p + 4;
     /*
@@ -35,7 +47,10 @@ lploc.unpack_localizer = function (bytes) {
             // read the prediction in the leaf nodes of the tree
             for (let k = 0; k < Math.pow(2, tdepth); ++k)
                 for (let l = 0; l < 2; ++l) {
-                    dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+                    dview.setUint8(0, bytes[p + 0])
+                    dview.setUint8(1, bytes[p + 1])
+                    dview.setUint8(2, bytes[p + 2])
+                    dview.setUint8(3, bytes[p + 3]);
                     tpreds_ls.push(dview.getFloat32(0, true));
                     p = p + 4;
                 }
