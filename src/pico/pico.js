@@ -41,7 +41,10 @@ pico.unpack_cascade = function (bytes) {
         p = p + 4 * Math.pow(2, tdepth) - 4;
         // read the prediction in the leaf nodes of the tree
         for (let i = 0; i < Math.pow(2, tdepth); ++i) {
-            dview.setUint8(0, bytes[p + 0]), dview.setUint8(1, bytes[p + 1]), dview.setUint8(2, bytes[p + 2]), dview.setUint8(3, bytes[p + 3]);
+            dview.setUint8(0, bytes[p + 0])
+            dview.setUint8(1, bytes[p + 1])
+            dview.setUint8(2, bytes[p + 2])
+            dview.setUint8(3, bytes[p + 3]);
             tpreds_ls.push(dview.getFloat32(0, true));
             p = p + 4;
         }
@@ -71,7 +74,9 @@ pico.unpack_cascade = function (bytes) {
             let idx = 1;
             for (let j = 0; j < tdepth; ++j)
                 // we use '>> 8' here to perform an integer division: this seems important for performance
-                idx = 2 * idx + (pixels[((r + tcodes[root + 4 * idx + 0] * s) >> 8) * ldim + ((c + tcodes[root + 4 * idx + 1] * s) >> 8)] <= pixels[((r + tcodes[root + 4 * idx + 2] * s) >> 8) * ldim + ((c + tcodes[root + 4 * idx + 3] * s) >> 8)]);
+                idx = 2 * idx
+                    + (pixels[((r + tcodes[root + 4 * idx + 0] * s) >> 8) * ldim + ((c + tcodes[root + 4 * idx + 1] * s) >> 8)] <= pixels[((r + tcodes[root + 4 * idx + 2] * s) >> 8) * ldim
+                    + ((c + tcodes[root + 4 * idx + 3] * s) >> 8)]);
 
             o = o + tpreds[pow2tdepth * i + idx - pow2tdepth];
 
@@ -113,6 +118,7 @@ pico.run_cascade = function (image, classify_region, params) {
                 if (q > 0.0)
                     detections.push([r, c, scale, q]);
             }
+
 
         scale = scale * scalefactor;
     }
