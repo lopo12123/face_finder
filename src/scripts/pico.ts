@@ -4,17 +4,21 @@
  */
 const CascadeOffset = 8
 
-export type ClassifyRegion = (row: number, col: number, s: number, pixels: number[], ldim: number) => number
+export type ClassifyRegion = (row: number, col: number, s: number, pixels: ArrayLike<number>, ldim: number) => number
 export type ImageSource = {
     nrows: number
     ncols: number
-    pixels: number[]
+    pixels: ArrayLike<number>
     ldim: number
 }
 export type CascadeParam = {
+    // minimum size of a face
     minsize: number
+    // maximum size of a face
     maxsize: number
+    // move the detection window by `${shiftfactor}` of its size
     shiftfactor: number
+    // for multiscale processing: resize the detection window by `${scalefactor - 1}` when moving to the higher scale
     scalefactor: number
 }
 export type DetectionUnit = [ row: number, column: number, scale: number, quality: number ]
@@ -89,7 +93,7 @@ export abstract class Pico {
         const threshold = new Float32Array(threshold_list)
 
         // 构造分类函数 (classification function)
-        return (row: number, col: number, s: number, pixels: number[], ldim: number) => {
+        return (row: number, col: number, s: number, pixels: ArrayLike<number>, ldim: number) => {
             row *= 256
             col *= 256
 
