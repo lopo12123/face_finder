@@ -80,7 +80,7 @@ export abstract class Lploc {
         // the location estimation function
         const _location_estimation = (
             row: number, col: number,
-            scale: number, pixels: number[],
+            scale: number, pixels: ArrayLike<number>,
             nrows: number, ncols: number,
             ldim: number
         ) => {
