@@ -1,28 +1,48 @@
 import { WebCam } from "./scripts/webcam";
-import './App.css'
+import Styles from "./App.module.scss";
 import { useEffect, useState } from "react";
 
 function App() {
     const controller = new WebCam()
 
-    const [ ctx, setCtx ] = useState<CanvasRenderingContext2D | null>(null)
+    const [ detect, setDetect ] = useState(false)
+    const [ baseCtx, setBaseCtx ] = useState<CanvasRenderingContext2D | null>(null)
+    const [ markCtx, setMarkCtx ] = useState<CanvasRenderingContext2D | null>(null)
 
-    setTimeout(() => {
-        const cvsEl = document.getElementById('cvs') as HTMLCanvasElement
-        setCtx(cvsEl.getContext('2d'))
-    }, 200)
+    useEffect(() => {
+        const cvs1 = document.getElementById('cvs_base') as HTMLCanvasElement
+        const cvs2 = document.getElementById('cvs_mark') as HTMLCanvasElement
+        setBaseCtx(cvs1.getContext('2d'))
+        setMarkCtx(cvs2.getContext('2d'))
+    })
+
+    const start = () => {
+        if(!baseCtx || !markCtx) {
+            console.log('no ctx')
+        }
+        else {
+            controller.start_detect(baseCtx, markCtx)
+            setDetect(true)
+        }
+    }
+
+    const stop = () => {
+        controller.stop()
+        setDetect(false)
+    }
 
     return (
-        <div className="App">
-            <button onClick={ () => {
-                controller.start_pure(ctx!)
-            } }>start
-            </button>
-            <button onClick={ () => {
-                controller.stop()
-            } }>stop
-            </button>
-            <canvas id="cvs"/>
+        <div className={ Styles.app }>
+            <div className={ Styles.operatePanel }>
+                { detect ? 'detecting' : 'pause' } <br/>
+                <button onClick={ start }>start</button>
+                <br/>
+                <button onClick={ stop }>stop</button>
+            </div>
+            <div className={ Styles.detectPanel }>
+                <canvas id="cvs_base"/>
+                <canvas id="cvs_mark"/>
+            </div>
         </div>
     )
 }

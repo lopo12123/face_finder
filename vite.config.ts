@@ -6,5 +6,10 @@ export default defineConfig({
     plugins: [ react() ],
     server: {
         port: 9707,
+    },
+    css: {
+        modules: {
+            scopeBehaviour: 'local'
+        },
     }
 })

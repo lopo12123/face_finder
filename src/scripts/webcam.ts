@@ -152,7 +152,7 @@ export class WebCam {
         return this.load_faceFinder()
             .then(classify_region => {
                 const renderer = custom_renderer ?? default_renderer
-                const update_fn = () => {
+                const update_fn = (el: HTMLVideoElement) => {
                     // run the cascade over the frame and cluster the obtained detections
                     // dets is an array that contains (r, c, s, q) quadruplets
                     // representing (row, column, scale and detection score)
@@ -171,6 +171,8 @@ export class WebCam {
                             renderer(ctx_mark, col, row, scale)
                         }
                     }
+
+                    ctx_base.drawImage(el, 0, 0)
                 }
 
                 return this.start_custom(update_fn)
