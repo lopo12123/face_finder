@@ -17,5 +17,19 @@
         position: relative;
         width: calc(100% - 100px);
         height: 100%;
+
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #cvs_base {
+            z-index: 1;
+        }
+
+        #cvs_mark {
+            z-index: 10;
+        }
     }
 }
