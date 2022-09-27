@@ -1,34 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { WebCam } from "./scripts/webcam";
 import './App.css'
+import { useEffect, useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+    const controller = new WebCam()
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    const [ ctx, setCtx ] = useState<CanvasRenderingContext2D | null>(null)
+
+    setTimeout(() => {
+        const cvsEl = document.getElementById('cvs') as HTMLCanvasElement
+        setCtx(cvsEl.getContext('2d'))
+    }, 200)
+
+    return (
+        <div className="App">
+            <button onClick={ () => {
+                controller.start_pure(ctx!)
+            } }>start
+            </button>
+            <button onClick={ () => {
+                controller.stop()
+            } }>stop
+            </button>
+            <canvas id="cvs"/>
+        </div>
+    )
 }
 
 export default App

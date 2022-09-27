@@ -37,15 +37,18 @@ function camvas(ctx, callback) {
     document.body.appendChild(streamContainer)
 
     // The callback happens when we are starting to stream the video.
-    navigator.mediaDevices.getUserMedia({video: true, audio: false}).then(function (stream) {
-        // Yay, now our webcam input is treated as a normal video and
-        // we can start having fun
-        self.video.srcObject = stream
-        // Let's start drawing the canvas!
-        self.update()
-    }, function (err) {
-        throw err
-    })
+    navigator.mediaDevices
+        .getUserMedia({video: true, audio: false})
+        .then(function (stream) {
+            // Yay, now our webcam input is treated as a normal video and
+            // we can start having fun
+            self.video.srcObject = stream
+            // Let's start drawing the canvas!
+            self.update()
+        })
+        .catch(err => {
+            console.log(err)
+        })
 
     // As soon as we can draw a new frame on the canvas, we call the `draw` function
     // we passed as a parameter.
