@@ -39,6 +39,13 @@ const default_renderer = (ctx: CanvasRenderingContext2D, x: number, y: number, r
 export class WebCam {
     #rafId: number = -1
     #video: HTMLVideoElement
+    #playing = false
+
+    // test() {
+    //     console.log('rafid: ', this.#rafId)
+    //     console.log('media_stream: ', this.#media_stream)
+    //     console.log('video: ', this.#video)
+    // }
 
     constructor() {
         const _video = document.createElement('video')
@@ -51,32 +58,46 @@ export class WebCam {
 
     // setup stream from user-media
     private stream() {
+        const _this = this
         return new Promise<void>((resolve, reject) => {
-            navigator
-                .mediaDevices
-                .getUserMedia({ video: true, audio: false })
-                .then(stream => {
-                    this.#video.srcObject = stream
-                    resolve()
-                })
-                .catch(err => {
-                    reject(err)
-                })
+            if(_this.#playing) {
+                console.log('[WebCam] MediaStream already connect')
+                resolve()
+            }
+            else {
+                navigator
+                    .mediaDevices
+                    .getUserMedia({ video: true, audio: false })
+                    .then(stream => {
+                        console.log('[WebCam] MediaStream connect')
+                        _this.#video.srcObject = stream
+                        _this.#playing = true
+                        resolve()
+                    })
+                    .catch(err => {
+                        reject(err)
+                    })
+            }
         })
     }
 
     // raf
     private raf(cb?: FrameCallback) {
-        const self = this
+        const _this = this
         let last_t = performance.now()
 
         const loop = (t: DOMHighResTimeStamp) => {
-            cb?.(self.#video, t - last_t)
+            cb?.(_this.#video, t - last_t)
             last_t = t
-            self.#rafId = requestAnimationFrame(loop)
+            _this.#rafId = requestAnimationFrame(loop)
         }
 
-        this.#rafId = requestAnimationFrame(loop)
+        loop(performance.now())
+
+        // setTimeout(() => {
+        //     cancelAnimationFrame(_this.#rafId)
+        //     console.log('cancel after 2s')
+        // }, 10_000)
     }
 
     // load file `facefinder`, return the classify_region function
@@ -87,7 +108,7 @@ export class WebCam {
                 .then(buffer => {
                     const bytes = new Int8Array(buffer)
                     const classify_region = Pico.unpack_cascade(bytes)
-                    console.log('[WebCam] face_finder loaded.')
+                    console.log('[WebCam] file "face_finder" loaded.')
                     resolve(classify_region)
                 })
                 .catch(err => {
@@ -101,11 +122,12 @@ export class WebCam {
      * @description auto-stop the old one if exist
      */
     start_custom(cb?: FrameCallback) {
-        this.stop()
+        const _this = this
+        _this.stop()
 
-        return this.stream()
+        return _this.stream()
             .then(() => {
-                this.raf(cb)
+                _this.raf(cb)
             })
     }
 
@@ -114,7 +136,11 @@ export class WebCam {
      * @description auto-stop the old one if exist
      */
     start_pure(ctx: CanvasRenderingContext2D) {
-        return this.start_custom((el, dt) => {
+        const canvas = ctx.canvas
+        canvas.width = canvas.clientWidth
+        canvas.height = canvas.clientHeight
+
+        return this.start_custom((el) => {
             ctx.drawImage(el, 0, 0)
         })
     }
@@ -131,6 +157,8 @@ export class WebCam {
         ctx_mark: CanvasRenderingContext2D,
         custom_renderer?: (ctx: CanvasRenderingContext2D, x: number, y: number, radius: number) => void
     ) {
+        const _this = this
+
         const canvas_base = ctx_base.canvas
         const canvas_mark = ctx_mark.canvas
 
@@ -156,7 +184,7 @@ export class WebCam {
             shiftfactor: 0.1
         }
 
-        return this.load_faceFinder()
+        return _this.load_faceFinder()
             .then(classify_region => {
                 const renderer = custom_renderer ?? default_renderer
                 const update_fn = (el: HTMLVideoElement) => {
@@ -182,7 +210,7 @@ export class WebCam {
                     ctx_base.drawImage(el, 0, 0)
                 }
 
-                return this.start_custom(update_fn)
+                return _this.start_custom(update_fn)
             })
     }
 
@@ -191,11 +219,15 @@ export class WebCam {
      * @return boolean - if a raf has been stopped
      */
     stop() {
-        if(this.#rafId !== -1) {
-            cancelAnimationFrame(this.#rafId)
-            this.#rafId = -1
+        const _this = this
+        console.log('close: ', _this)
+        if(_this.#rafId !== -1) {
+            cancelAnimationFrame(_this.#rafId)
+            _this.#rafId = -1
+            console.log('[WebCam] raf has been cancelled')
             return true
         }
+        console.log('[WebCam] no raf is running')
         return false
     }
 }

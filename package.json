@@ -1,11 +1,11 @@
 {
-    "name": "pistol",
+    "name": "face_finder",
     "private": true,
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "dev:pistol": "vite --host",
-        "build:pistol": "tsc && vite build"
+        "dev:finder": "vite --host",
+        "build:finder": "tsc && vite build"
     },
     "dependencies": {
         "react": "^18.2.0",
