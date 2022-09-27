@@ -26,7 +26,7 @@ export type DetectionList = DetectionUnit[]
 
 export abstract class Pico {
     // unpack cascade
-    public static unpack_cascade(bytes: Array<any>): ClassifyRegion {
+    public static unpack_cascade(bytes: Int8Array): ClassifyRegion {
         // region 获取树的深度、大小信息
         // 构建一个4字节大小的视图
         const data_view = new DataView(new ArrayBuffer(4))
@@ -64,7 +64,7 @@ export abstract class Pico {
         for (let tree_idx = 0; tree_idx < treeCount; tree_idx++) {
             // 读取树
             Array.prototype.push.apply(tree_code_list, [ 0, 0, 0, 0 ])
-            Array.prototype.push.apply(tree_code_list, bytes.slice(p, p + treeLength))
+            Array.prototype.push.apply(tree_code_list, [ ...bytes.slice(p, p + treeLength) ])
             p += treeLength
 
             // 读取预测

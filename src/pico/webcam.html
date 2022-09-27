@@ -59,7 +59,9 @@
                 for (var r = 0; r < nrows; ++r)
                     for (var c = 0; c < ncols; ++c)
                         // gray = 0.2*red + 0.7*green + 0.1*blue
-                        gray[r * ncols + c] = (2 * rgba[r * 4 * ncols + 4 * c + 0] + 7 * rgba[r * 4 * ncols + 4 * c + 1] + 1 * rgba[r * 4 * ncols + 4 * c + 2]) / 10;
+                        gray[r * ncols + c] = (2 * rgba[r * 4 * ncols + 4 * c + 0]
+                            + 7 * rgba[r * 4 * ncols + 4 * c + 1]
+                            + 1 * rgba[r * 4 * ncols + 4 * c + 2]) / 10;
                 return gray;
             }
 
