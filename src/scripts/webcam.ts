@@ -132,6 +132,13 @@ export class WebCam {
         custom_renderer?: (ctx: CanvasRenderingContext2D, x: number, y: number, radius: number) => void
     ) {
         const canvas_base = ctx_base.canvas
+        const canvas_mark = ctx_mark.canvas
+
+        canvas_base.width = canvas_base.clientWidth
+        canvas_base.height = canvas_base.clientHeight
+        canvas_mark.width = canvas_mark.clientWidth
+        canvas_mark.height = canvas_mark.clientHeight
+
         const { width, height } = canvas_base
         const rgba = ctx_base.getImageData(0, 0, width, height).data
 
