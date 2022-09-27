@@ -9,6 +9,8 @@ lerna-debug.log*
 
 test
 
+*.7z
+
 node_modules
 dist
 dist-ssr
