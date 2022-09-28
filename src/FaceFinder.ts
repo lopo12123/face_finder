@@ -49,6 +49,57 @@ const faceFinderLoader = (): Promise<ClassifyRegion> => {
     })
 }
 
+// 单图检测
+const imageDetect = (source: ImageData, width: number, height: number, ctx: CanvasRenderingContext2D, renderer?: DetectionRenderer) => {
+    const update_memory = Pico.instantiate_detection_memory(5)
+    const image: ImageSource = {
+        pixels: rgba2grayscale(source.data, height, width),
+        nrows: height,
+        ncols: width,
+        ldim: Math.max(width, height)
+    }
+    const param: CascadeParam = {
+        minsize: 100,
+        maxsize: 1000,
+        scalefactor: 1.1,
+        shiftfactor: 0.1
+    }
+    const _renderer = renderer || DefaultRenderer
+
+    return faceFinderLoader()
+        .then(classify_region => {
+            let dets = Pico.run_cascade(image, classify_region, param)
+            dets = update_memory(dets)
+            dets = Pico.cluster_detection(dets, 0.2)
+
+            for (let i = 0; i < dets.length; i++) {
+                if(dets[i][3] > 50) {
+                    const [ row, col, scale ] = dets[i]
+                    _renderer(ctx, [ col, row, scale ])
+                }
+            }
+        })
+}
+
+// 获取图片文件尺寸
+export const getImageSize = (file: File) => {
+    return new Promise<[ number, number ]>((resolve, reject) => {
+        const img = new Image()
+        const reader = new FileReader()
+        reader.onload = () => {
+            img.src = reader.result as string
+            if(img.complete) resolve([ img.width, img.height ])
+            else {
+                img.onload = () => {
+                    resolve([ img.width, img.height ])
+                }
+            }
+        }
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+    })
+}
+
 export class FaceFinder {
     #rafId = -1
     #video: HTMLVideoElement
@@ -127,7 +178,7 @@ export class FaceFinder {
     /**
      * @description 渲染底图 + 标记
      */
-    public start_detect(ctx_base: CanvasRenderingContext2D, ctx_mark: CanvasRenderingContext2D, renderer?: any) {
+    public start_detect(ctx_base: CanvasRenderingContext2D, ctx_mark: CanvasRenderingContext2D, renderer?: DetectionRenderer) {
         const cvs_base = ctx_base.canvas
         const cvs_mark = ctx_mark.canvas
 
@@ -174,7 +225,7 @@ export class FaceFinder {
                         // the constant 50.0 is empirical: other cascades might require a different one.
                         if(dets[i][3] > 50) {
                             const [ row, col, scale ] = dets[i]
-                            _renderer(ctx_mark, col, row, scale)
+                            _renderer(ctx_mark, [ col, row, scale ])
                         }
                     }
                 }
@@ -203,9 +254,35 @@ export class FaceFinder {
 
     // endregion
 
-    // region 单图检测
-    public single_detect(image: ImageData) {
+    // region 单图检测 todo
+    public single_detect(file: File, ctx: CanvasRenderingContext2D) {
+        if(!file.type.startsWith('image/')) return Promise.reject('File type error.')
 
+        getImageSize(file)
+            .then(_size => {
+                const reader = new FileReader()
+                const img = new Image(..._size)
+                reader.onload = () => {
+                    img.src = reader.result as string
+                    img.onload = () => {
+                        const _cvs = document.createElement('canvas')
+                        _cvs.width = _size[0]
+                        _cvs.height = _size[1]
+                        const _ctx = _cvs.getContext('2d')!
+                        _ctx.drawImage(img, 0, 0)
+                        const image_data = _ctx.getImageData(0, 0, _size[0], _size[1])
+                        imageDetect(image_data, _size[0], _size[1], ctx)
+                            .then(() => {
+                                console.log('done')
+                            })
+                            .catch(err => {
+                                console.log(err)
+                            })
+                    }
+                }
+                reader.readAsDataURL(file)
+            })
     }
+
     // endregion
 }
