@@ -42,14 +42,14 @@ const faceFinderLoader = (): Promise<ClassifyRegion> => {
             .then(buffer => {
                 const bytes = new Int8Array(buffer)
                 const classify_region = Pico.unpack_cascade(bytes)
-                console.log('[RafController] "face_finder" loaded.')
+                console.log('[FaceFinder] "face_finder" loaded.')
                 resolve(classify_region)
             })
             .catch(err => reject(err))
     })
 }
 
-export class RafController {
+export class FaceFinder {
     #rafId = -1
     #video: HTMLVideoElement
 
@@ -76,6 +76,7 @@ export class RafController {
         this.#video = _video
     }
 
+    // region 视频流检测
     /**
      * @description 获取视频流
      */
@@ -85,7 +86,7 @@ export class RafController {
             return navigator.mediaDevices
                 .getUserMedia({ video: true, audio: false })
                 .then(stream => {
-                    console.log(`[RafController] media-stream ready. (id: ${ stream.id })`)
+                    console.log(`[FaceFinder] media-stream ready. (id: ${ stream.id })`)
                     this.#video.srcObject = stream
                 })
         }
@@ -189,14 +190,22 @@ export class RafController {
             cancelAnimationFrame(this.#rafId)
             this.#rafId = -1
             if(close_stream) this.#video.srcObject = null
-            console.log('[RafController] raf has been cancelled')
+            console.log('[FaceFinder] raf has been cancelled')
             this.#playing = false
             this.onPlayingChange?.(false)
             return true
         }
         else {
-            console.log('[RafController] no raf is running')
+            console.log('[FaceFinder] no raf is running')
             return false
         }
     }
+
+    // endregion
+
+    // region 单图检测
+    public single_detect(image: ImageData) {
+
+    }
+    // endregion
 }
