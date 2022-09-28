@@ -1,4 +1,12 @@
-import { FaceFinderFilePath, ClassifyRegion, Pico, ImageSource, CascadeParam } from "./scripts/pico";
+import {
+    FaceFinderFilePath,
+    ClassifyRegion,
+    Pico,
+    ImageSource,
+    CascadeParam,
+    QThreshold,
+    IoUThreshold
+} from "./scripts/pico";
 
 // raf 每帧调用的回调
 export type RafCallback = (video: HTMLVideoElement, dt: DOMHighResTimeStamp) => void
@@ -216,14 +224,14 @@ export class FaceFinder {
                     let dets = Pico.run_cascade(image, classify_region, param)
                     dets = update_memory(dets)
 
-                    // set IoU threshold to 0.2
-                    dets = Pico.cluster_detection(dets, 0.2)
+                    // set IoU threshold
+                    dets = Pico.cluster_detection(dets, IoUThreshold)
 
                     // draw detections
                     for (let i = 0; i < dets.length; i++) {
                         // check the detection score, if it's above the threshold, draw it.
                         // the constant 50.0 is empirical: other cascades might require a different one.
-                        if(dets[i][3] > 50) {
+                        if(dets[i][3] > QThreshold) {
                             const [ row, col, scale ] = dets[i]
                             _renderer(ctx_mark, [ col, row, scale ])
                         }

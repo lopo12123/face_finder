@@ -6,6 +6,10 @@ const CascadeOffset = 8
 
 // facefinder文件地址
 export const FaceFinderFilePath = './facefinder'
+// q 阈值 (detection score)
+export const QThreshold = 5
+// IoU 阈值
+export const IoUThreshold = 0.2
 
 export type ClassifyRegion = (row: number, col: number, s: number, pixels: ArrayLike<number>, ldim: number) => number
 export type ImageSource = {
