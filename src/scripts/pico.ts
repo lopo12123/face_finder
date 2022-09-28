@@ -4,6 +4,9 @@
  */
 const CascadeOffset = 8
 
+// facefinder文件地址
+export const FaceFinderFilePath = './facefinder'
+
 export type ClassifyRegion = (row: number, col: number, s: number, pixels: ArrayLike<number>, ldim: number) => number
 export type ImageSource = {
     nrows: number
