@@ -29,15 +29,17 @@ export default () => {
             <canvas id="demoCanvas"
                     style={ {
                         position: 'absolute',
-                        zIndex: 1
-                    } }
-                    width={ 400 } height={ 300 }/>
+                        zIndex: 1,
+                        width: '100%',
+                        height: '100%'
+                    } }/>
             <canvas id="demoCanvas2"
                     style={ {
                         position: 'absolute',
-                        zIndex: 10
-                    } }
-                    width={ 400 } height={ 300 }/>
+                        zIndex: 10,
+                        width: '100%',
+                        height: '100%'
+                    } }/>
         </div>
     )
 }
